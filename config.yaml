@@ -1,0 +1,48 @@
+# ─────────────────────────────────────────────
+# Global hyperparameters for the pipeline
+# ─────────────────────────────────────────────
+
+# LLM used throughout the pipeline
+# (rule detection, validation, pruning, matching, memory building, tool selection)
+llm: t3q
+
+# Paths to HuggingFace model directories
+model_paths:
+  t3q: ""    # set to local path of JungZoona/T3Q-qwen2.5-14b-v1.0-e3
+
+# Tools included in the pipeline
+tool_list:
+  - BERT
+  - DRFP
+  - Dora_xgb
+  - Chemformer
+  - Molecular
+  - Prompt_Llama
+  - Prompt_T3Q
+  - ICL_Llama
+  - ICL_T3Q
+  - Chemformer_Llama
+  - Chemformer_T3Q
+  - Molecular_Llama
+  - Molecular_T3Q
+
+hierarchy:
+  p: 0.25          # fraction of tools assigned to tier 1
+
+subset:
+  N_list: [5, 10, 25, 45]  # per-category sample sizes for subset construction
+  M: 100                   # number of random subsets per (tool, N)
+
+rule_filtering:
+  tau_1: 1.0       # min example_matching_rate for a pattern to pass
+  tau_2: 1.0       # min llm_validation agreement_rate for a pattern to pass
+
+ruleset:
+  tau_3: 0.5       # min rule confidence to include in rule_set
+  top_p: 5         # max rules per tool in rule_set
+
+selection:
+  L: 5             # top-L tools by confidence shown to LLM
+  top_k: 8         # number of FAISS-retrieved reference reactions
+
+cuda_visible_devices: "0"    # GPU device(s) for LLM inference

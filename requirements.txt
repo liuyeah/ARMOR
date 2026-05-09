@@ -1,0 +1,15 @@
+# Core deep learning
+torch==2.4.1
+transformers==4.57.1
+accelerate==1.11.0
+
+# Similarity retrieval
+faiss-gpu==1.7.2       # use faiss-cpu if no GPU available
+
+# Chemistry fingerprint
+drfp==0.3.7
+
+# Utilities
+numpy==2.2.6
+tqdm==4.67.1
+pyyaml==6.0.3
