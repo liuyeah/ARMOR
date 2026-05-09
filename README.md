@@ -10,6 +10,8 @@ A three-module pipeline for chemistry reaction feasibility prediction:
 2. **Module 2: Utility-Aware Tool Prioritization** — Extract and refine per-tool reaction rules; match rules against disagreement samples.
 3. **Module 3: Tool Conflict Resolution** — Build guided demonstrations; use FAISS + LLM to resolve tool conflicts on the test set.
 
+![ARMOR Pipeline](ARMOR.png)
+
 > **Note:** "rule" in this repository corresponds to "pattern" in the paper.
 
 ---
