@@ -38,7 +38,7 @@ from utils import CFG, TOOL_LIST
 PRUNE_DIR        = (CODES_DIR / "module2_utility_aware_tool_prioritization"
                     / "reaction_specific_tool_utility_assessment"
                     / "pattern_consolidation" / "prune_outputs")
-EXAMPLE_DATA_DIR = CODES_DIR / "example_data"
+DEMO_DATA_DIR = CODES_DIR / "data" / "demo"
 
 LLM = CFG["llm"]
 
@@ -47,10 +47,10 @@ PHASE_TO_SPLIT = {"dev": "dev", "test": "test"}
 
 
 def get_n_combined(split_type):
-    """Infer total sample count from example_data idx values."""
+    """Infer total sample count from data/demo idx values."""
     max_idx = -1
     for tool_name in TOOL_LIST:
-        path = EXAMPLE_DATA_DIR / split_type / f"{tool_name}.jsonl"
+        path = DEMO_DATA_DIR / split_type / f"{tool_name}.jsonl"
         if not path.exists():
             continue
         for r in load_jsonl(path):
@@ -65,7 +65,7 @@ def load_jsonl(path):
 
 def load_tool_preds(split_type, tool_name):
     """Returns {combined_idx: pred_str} for all samples in the split."""
-    path = EXAMPLE_DATA_DIR / split_type / f"{tool_name}.jsonl"
+    path = DEMO_DATA_DIR / split_type / f"{tool_name}.jsonl"
     if not path.exists():
         return {}
     return {int(r["idx"]): str(r.get("tool_prediction", "NA"))

@@ -5,7 +5,7 @@ subset_construction.py
 
 For each tool and each N in N_LIST, generate M random subsets of size ~4N
 (N pos_correct + N neg_correct + N pos_wrong + N neg_wrong), sampling from
-the tool's dev predictions in example_data/dev/.
+the tool's dev predictions in data/demo/dev/.
 N_LIST and M are read from config.yaml.
 
 Output: outputs/N={N}/{tool}/sample_{i}.jsonl
@@ -27,7 +27,7 @@ CODES_DIR = BASE_DIR.parent.parent.parent
 sys.path.insert(0, str(CODES_DIR / "utils"))
 from utils import CFG, TOOL_LIST
 
-EXAMPLE_DATA_DIR = CODES_DIR / "example_data"
+DEMO_DATA_DIR = CODES_DIR / "data" / "demo"
 OUTPUT_BASE      = BASE_DIR / "outputs"
 
 
@@ -37,7 +37,7 @@ def sample_up_to(lst, n, rng):
 
 def load_dev_samples(tool_name):
     """Returns (pos_correct, pos_wrong, neg_correct, neg_wrong) lists."""
-    path = EXAMPLE_DATA_DIR / "dev" / f"{tool_name}.jsonl"
+    path = DEMO_DATA_DIR / "dev" / f"{tool_name}.jsonl"
     pos_correct, pos_wrong, neg_correct, neg_wrong = [], [], [], []
     with open(path, encoding="utf-8") as f:
         for line in f:

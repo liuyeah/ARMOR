@@ -16,16 +16,16 @@ BASE_DIR         = Path(__file__).parent
 CODES_DIR        = BASE_DIR.parent
 HIERARCHY_PATH   = BASE_DIR / "hierarchy.json"
 OUTPUT_DIR       = BASE_DIR / "test_splits"
-EXAMPLE_DATA_DIR = CODES_DIR / "example_data"
+DEMO_DATA_DIR = CODES_DIR / "data" / "demo"
 
 sys.path.insert(0, str(CODES_DIR / "utils"))
 
 
 def load_preds(tool, label=None):
-    """Load test predictions for a tool from example_data/test.
+    """Load test predictions for a tool from data/demo/test.
     If label is given (1 or 0), filter by that label only.
     """
-    path = EXAMPLE_DATA_DIR / "test" / f"{tool}.jsonl"
+    path = DEMO_DATA_DIR / "test" / f"{tool}.jsonl"
     preds = []
     with open(path) as f:
         for line in f:
@@ -55,7 +55,7 @@ def main():
         idx = sample["idx"]
         is_pos = str(sample["label"]) == "1"
         preds_map = tier1_preds_pos if is_pos else tier1_preds_neg
-        idx_lookup = idx      # use original example_data idx for both pos and neg lookups
+        idx_lookup = idx      # use original data/demo idx for both pos and neg lookups
         votes = {preds_map[t].get(idx_lookup) for t in tier1}
         entry = {k: sample[k] for k in sample}
         entry["tier1_predictions"] = {t: preds_map[t].get(idx_lookup) for t in tier1}

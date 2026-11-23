@@ -2,7 +2,7 @@
 """
 eval_test.py
 
-Evaluates performance on the example_data test set.
+Evaluates performance on the data/demo test set.
   1. Each individual tool
   2. ARMOR (our method)
 
@@ -22,7 +22,7 @@ CODES_DIR = BASE.parent
 sys.path.insert(0, str(CODES_DIR / "utils"))
 from utils import TOOL_LIST, load_jsonl, save_jsonl, CFG
 
-EXAMPLE_DATA_DIR = CODES_DIR / "example_data"
+DEMO_DATA_DIR = CODES_DIR / "data" / "demo"
 TEST_SPLITS      = CODES_DIR / "module1_tool_hierarchy_construction" / "test_splits"
 DEV_SPLITS       = CODES_DIR / "module1_tool_hierarchy_construction" / "splits"
 SEL_DIR          = (CODES_DIR / "module3_tool_conflict_resolution"
@@ -76,7 +76,7 @@ def compute_metrics_from_preds(preds, labels):
 
 def load_raw_preds(tool):
     """Returns {combined_idx: pred_str}."""
-    path = EXAMPLE_DATA_DIR / "test" / f"{tool}.jsonl"
+    path = DEMO_DATA_DIR / "test" / f"{tool}.jsonl"
     preds = {}
     if not path.exists():
         return preds
@@ -86,8 +86,8 @@ def load_raw_preds(tool):
 
 
 def load_test_labels():
-    """Returns {combined_idx: label_str} from example_data/test/."""
-    path = EXAMPLE_DATA_DIR / "test" / "Prompt_T3Q.jsonl"
+    """Returns {combined_idx: label_str} from data/demo/test/."""
+    path = DEMO_DATA_DIR / "test" / "Prompt_T3Q.jsonl"
     return {int(r["idx"]): str(r.get("label", "")) for r in load_jsonl(path)}
 
 

@@ -216,3 +216,18 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Runtime outputs of the pipeline: under the module and evaluation
+# directories, only the .py source files are tracked.
+/module1_tool_hierarchy_construction/**
+/module2_utility_aware_tool_prioritization/**
+/module3_tool_conflict_resolution/**
+/evaluation/**
+!/module1_tool_hierarchy_construction/**/
+!/module2_utility_aware_tool_prioritization/**/
+!/module3_tool_conflict_resolution/**/
+!/evaluation/**/
+!/module1_tool_hierarchy_construction/**/*.py
+!/module2_utility_aware_tool_prioritization/**/*.py
+!/module3_tool_conflict_resolution/**/*.py
+!/evaluation/**/*.py

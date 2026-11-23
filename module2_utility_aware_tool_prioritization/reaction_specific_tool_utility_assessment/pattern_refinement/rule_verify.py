@@ -10,7 +10,7 @@ sys.path.insert(0, str(_CODES_DIR / "utils"))
 from utils import CFG, TOOL_LIST
 
 PATTERN_EXTRACTION_OUTPUTS = _BASE_DIR.parent / "pattern_extraction" / "outputs"
-EXAMPLE_DATA_DIR = _CODES_DIR / "example_data"
+DEMO_DATA_DIR = _CODES_DIR / "data" / "demo"
 
 PCT_RE = re.compile(r"^\s*([0-9]+(?:\.[0-9]+)?)\s*%?\s*$")
 

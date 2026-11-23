@@ -22,7 +22,7 @@ from typing import Any, Dict, List, Set, Tuple
 # ── Paths ─────────────────────────────────────────────────────────────────────
 
 CODES_DIR        = Path(__file__).parent.parent
-EXAMPLE_DATA_DIR = CODES_DIR / "example_data"
+DEMO_DATA_DIR = CODES_DIR / "data" / "demo"
 _HIERARCHY_PATH  = CODES_DIR / "module1_tool_hierarchy_construction" / "hierarchy.json"
 _CONFIG_PATH     = CODES_DIR / "config.yaml"
 

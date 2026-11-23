@@ -17,7 +17,7 @@ from pathlib import Path
 
 BASE_DIR         = Path(__file__).parent
 CODES_DIR        = BASE_DIR.parent
-EXAMPLE_DATA_DIR = CODES_DIR / "example_data"
+DEMO_DATA_DIR = CODES_DIR / "data" / "demo"
 
 sys.path.insert(0, str(CODES_DIR / "utils"))
 from utils import CFG, TOOL_LIST
@@ -26,10 +26,10 @@ TOOLS = TOOL_LIST
 
 
 def load_preds(split, tool, label=None):
-    """Load predictions for a tool from example_data/dev or example_data/test.
+    """Load predictions for a tool from data/demo/dev or data/demo/test.
     If label is given (1 or 0), filter by that label only.
     """
-    path = EXAMPLE_DATA_DIR / split / f"{tool}.jsonl"
+    path = DEMO_DATA_DIR / split / f"{tool}.jsonl"
     preds = []
     with open(path) as f:
         for line in f:
@@ -65,7 +65,7 @@ def main():
     p = CFG["hierarchy"]["p"]
     k = max(1, round(len(TOOLS) * p))
     print(f"hierarchy.p={p} → tier-1 size k={k} / {len(TOOLS)} tools\n")
-    print("Computing accuracy on example_data/dev...\n")
+    print("Computing accuracy on data/demo/dev...\n")
 
     results = []
     for tool in TOOLS:
@@ -87,7 +87,7 @@ def main():
             tier2.append(r["tool"])
 
     hierarchy = {
-        "split": f"example_data/dev ({results[0]['n_pos']} pos + {results[0]['n_neg']} neg per tool)",
+        "split": f"data/demo/dev ({results[0]['n_pos']} pos + {results[0]['n_neg']} neg per tool)",
         "k": k,
         "tier1": tier1,
         "tier2": tier2,
@@ -121,7 +121,7 @@ def main():
         idx = sample["idx"]
         is_pos = sample["label"] == 1 or sample["label"] == "1"
         preds_map = tier1_preds_pos if is_pos else tier1_preds_neg
-        idx_lookup = idx      # use original example_data idx for both pos and neg lookups
+        idx_lookup = idx      # use original data/demo idx for both pos and neg lookups
         votes = {preds_map[t].get(idx_lookup) for t in tier1}
         entry = {field: sample[field] for field in sample}
         entry["tier1_predictions"] = {t: preds_map[t].get(idx_lookup) for t in tier1}

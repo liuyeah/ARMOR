@@ -10,7 +10,7 @@ A three-module pipeline for chemistry reaction feasibility prediction:
 2. **Module 2: Utility-Aware Tool Prioritization** — Extract and refine per-tool reaction rules; match rules against disagreement samples.
 3. **Module 3: Tool Conflict Resolution** — Build guided demonstrations; use FAISS + LLM to resolve tool conflicts on the test set.
 
-<img src="ARMOR.png" alt="ARMOR Pipeline" width="800"/>
+<a href="ARMOR.pdf"><img src="ARMOR.png" alt="ARMOR Pipeline" width="800"/></a>
 
 > **Note:** "rule" in this repository corresponds to "pattern" in the paper.
 
@@ -18,24 +18,50 @@ A three-module pipeline for chemistry reaction feasibility prediction:
 
 ## Data
 
-**Input:** `example_data/dev/` and `example_data/test/`, each containing one JSONL file per tool with predictions and labels.
+All data is under `data/`.
 
-**Output:** `evaluation/predictions_ARMOR.jsonl` — per-sample final predictions, alongside the metrics table printed by `eval_test.py`.
+### Datasets
 
-### Input Format
+We release the reactions and ground-truth labels of the three datasets used in the paper. Each dataset has a `dev.jsonl` and a `test.jsonl`, with one reaction per line:
 
-ARMOR is applicable to the reaction feasibility task where multiple tools produce per-sample predictions. Format each tool's predictions as a JSONL file where every line is, like the example data:
+```json
+{"idx": 0, "reactants": "<SMILES>", "product": "<SMILES>", "label": "1"}
+```
+
+| Dataset | Directory | Dev | Test | Source |
+|---|---|---|---|---|
+| FREA | `data/FREA/` | 3,000 feasible + 3,000 infeasible | 3,000 feasible + 3,000 infeasible | Yu et al. [1] |
+| OChem-Cand | `data/OChem-Cand/` | 1,500 feasible + 1,500 infeasible | 1,500 feasible + 1,500 infeasible | USPTO reactions, with the candidate products of Coley et al. [2] as infeasible reactions |
+| RxnEBM-Prop | `data/RxnEBM-Prop/` | 1,500 feasible + 1,500 infeasible | 1,500 feasible + 1,500 infeasible | USPTO-50K reactions, with the NeuralSym proposals released by Lin et al. [3] as infeasible reactions |
+
+- `idx`: integer sample index, starting from 0
+- `reactants` / `product`: SMILES strings in Kekulé form
+- `label`: `"1"` for feasible, `"0"` for infeasible
+
+Within each file the feasible reactions come first.
+
+If you use these datasets, please also cite their sources:
+
+1. Botao Yu, Bo Zhou, Daniel Adu-Ampratwum, Frazier N. Baker, Ziru Chen, Reza Averly, Ye Liu, Wenhao Gao, Xia Ning, Huan Sun. FREA: A Multi-Source Expert Benchmark for Reaction Feasibility Verification. arXiv:2610.06614, 2026.
+2. Connor W. Coley, Regina Barzilay, Tommi S. Jaakkola, William H. Green, Klavs F. Jensen. Prediction of Organic Reaction Outcomes Using Machine Learning. ACS Central Science, 3(5):434–443, 2017. https://doi.org/10.1021/acscentsci.7b00064
+3. Min Htoo Lin, Zhengkai Tu, Connor W. Coley. Improving the performance of models for one-step retrosynthesis through re-ranking. Journal of Cheminformatics, 14:15, 2022. https://doi.org/10.1186/s13321-022-00594-8
+
+### Tool Predictions
+
+ARMOR takes as input the predictions of each tool on the dev and test reactions. To run ARMOR on a dataset, first run your own tools on its reactions, then write each tool's predictions as a JSONL file where every line is:
 
 ```json
 {"idx": 0, "reactants": "<SMILES>", "product": "<SMILES>", "label": "1", "tool_prediction": "1"}
 ```
 
-- `idx`: integer sample index, consistent across all tool files and starting from 0
-- `reactants` / `product`: SMILES strings
-- `label`: ground-truth binary label (`"0"` or `"1"`)
-- `tool_prediction`: tool's prediction (`"0"`, `"1"`, or `"NA"` for abstention)
+- `idx`, `reactants`, `product`, `label`: as in the dataset files, with `idx` consistent across all tool files
+- `tool_prediction`: the tool's prediction (`"0"`, `"1"`, or `"NA"` for abstention)
 
-Place one such file per tool under `example_data/dev/` and `example_data/test/`, named `{tool_name}.jsonl`, and update `tool_list` in `config.yaml` accordingly.
+`data/demo/` is a demo in this format that runs out of the box: 100 dev and 100 test reactions sampled from FREA (50 feasible + 50 infeasible each), with the predictions of the 13 tools used in the paper, one file per tool.
+
+**Input:** the pipeline reads `data/demo/dev/` and `data/demo/test/`. To run on other reactions or tools, replace the files there with one file per tool, named `{tool_name}.jsonl`, and update `tool_list` in `config.yaml` accordingly.
+
+**Output:** `evaluation/predictions_ARMOR.jsonl` — per-sample final predictions, alongside the metrics table printed by `eval_test.py`.
 
 ---
 
@@ -92,7 +118,7 @@ Edit `config.yaml` before running. Key parameters:
 
 ## Running the Pipeline
 
-Run each module in order from the `Codes/` root directory:
+Run each module in order from the repository root:
 
 ```bash
 # Module 1: build tool hierarchy and split dev/test samples
@@ -115,7 +141,7 @@ The four scripts must be run in order. See each script for per-step details.
 ## Repository Structure
 
 ```
-Codes/
+ARMOR/
 ├── config.yaml
 ├── requirements.txt
 ├── run_module1.sh
@@ -124,9 +150,13 @@ Codes/
 ├── run_eval.sh
 ├── utils/
 │   └── utils.py
-├── example_data/
-│   ├── dev/        {tool}.jsonl for each tool
-│   └── test/       {tool}.jsonl for each tool
+├── data/
+│   ├── FREA/           dev.jsonl, test.jsonl (reactions and labels)
+│   ├── OChem-Cand/     dev.jsonl, test.jsonl (reactions and labels)
+│   ├── RxnEBM-Prop/    dev.jsonl, test.jsonl (reactions and labels)
+│   └── demo/           small runnable demo with tool predictions
+│       ├── dev/        {tool}.jsonl for each tool
+│       └── test/       {tool}.jsonl for each tool
 ├── module1_tool_hierarchy_construction/
 │   ├── define_hierarchy.py
 │   └── find_test_disagreement.py

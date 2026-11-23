@@ -18,7 +18,7 @@ sys.path.insert(0, str(_CODES_DIR / "utils"))
 from utils import CFG, TOOL_LIST, load_pipe, call_llm_single as _call_llm_single, validate_output_single
 
 PATTERN_EXTRACTION_DIR = _BASE_DIR / "outputs_json_format"   # written by rule_verify.py
-EXAMPLE_DATA_DIR       = _CODES_DIR / "example_data"
+DEMO_DATA_DIR          = _CODES_DIR / "data" / "demo"
 
 
 def _norm_pred(v: Any) -> Optional[int]:
@@ -138,7 +138,7 @@ def main():
             for sample_num in tqdm(range(M), desc=f"TOOL: {tool_name}, N={N}, LLM: {llm}"):
                 in_json = str(PATTERN_EXTRACTION_DIR / f"N={N}" / tool_name
                               / f"sample_{sample_num}_{llm}_json_format_pattern.json")
-                dataset_jsonl = str(EXAMPLE_DATA_DIR / "dev"
+                dataset_jsonl = str(DEMO_DATA_DIR / "dev"
                                     / f"{tool_name}.jsonl")
                 output_dir = _BASE_DIR / f"outputs_json_format/N={N}/{tool_name}/valid_by_{llm}"
                 output_dir.mkdir(parents=True, exist_ok=True)
